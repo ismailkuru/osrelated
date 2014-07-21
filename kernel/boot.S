@@ -16,6 +16,7 @@ _start:
 #define BOOT_TIME_STACK_SIZE 0x4000
 entry:
 	movl	$(stack + BOOT_TIME_STACK_SIZE), %esp
+	pushl	%ebx
 	pushl	%eax
 	call	setup
 

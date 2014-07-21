@@ -10,6 +10,7 @@ OBJS = \
 	setup.o \
 	earlyio.o \
 	boot.o \
+	utils.c \
 
 default : kernel
 

@@ -1,5 +1,6 @@
 #include "earlyio.h"
 #include "types.h"
+#include "utils.h"
 
 static unsigned const COLUMNS = 80;
 static unsigned const ROWS = 24;
@@ -47,4 +48,37 @@ void eio_puts(char const *asciiz)
 {
 	while (*asciiz)
 		eio_putchar(*asciiz++);
+}
+
+#include <stdarg.h>
+
+void eio_printf(char const *fmt, ...)
+{
+	char buffer[20];
+	int c;
+
+	va_list vararg_lst;
+	va_start(vararg_lst, fmt);
+
+	while ((c = *fmt++) != 0) {
+		if (c != '%') {
+			eio_putchar(c);
+			continue;
+		}
+
+		c = *fmt++;
+		if (c == 'd' || c == 'u' || c == 'x') {
+			int value = va_arg(vararg_lst, int);
+			itoa(buffer, value, (c == 'x' ? 16 : 10));
+			eio_puts(buffer);	
+		} else if (c == 's') {
+			eio_puts(va_arg(vararg_lst, char const *));
+		} else if (c == 'c') {
+			eio_putchar(va_arg(vararg_lst, int));
+		} else {
+			eio_putchar(c);
+		}
+	}
+
+	va_end(vararg_lst);
 }

@@ -5,6 +5,10 @@
 #define MB_BOOT_MAGIC   0x2BADB002
 
 #define MBF_PAGE_ALIGN  0x00000001
+#define MBF_MEMORY_INFO 0x00000002
+
+#define MBI_MEMORY_INFO 0x00000001
+
 /* there are other multiboot flags that i do not support so far */
 
 #ifndef __ASM_FILE__
@@ -18,7 +22,17 @@ struct multiboot_header
 	u32 flags;
 	u32 checksum;
 
-	/* there are other fields that i do not support so far */
+	/* there are other fields */
+};
+
+struct multiboot_info
+{
+	u32 flags;
+
+	u32 lower_mem;
+	u32 upper_mem;
+
+	/* there are other fields */
 };
 
 #endif
