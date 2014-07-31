@@ -1,58 +1,57 @@
 ENTRY(_start)
 
-EXT_MEM_SIZE = 0x00100000; /* must be equal to layout.h::EXT_MEM_SIZE */
-KERNEL_BASE  = 0xC0000000; /* must be equal to layout.h::KERNEL_BASE */
+/* must be equal to layout.h definitions */
+LINEAR_ADDRESS_BASE  = 0x00100000;
+VIRTUAL_ADDRESS_BASE = 0xC0000000;
+KERNEL_LINK_ADDRESS  = LINEAR_ADDRESS_BASE + VIRTUAL_ADDRESS_BASE;
 
 SECTIONS
 {
-	. = EXT_MEM_SIZE;
-	.text :
-	{
+	. = LINEAR_ADDRESS_BASE;
+	.bootstrap : AT(LINEAR_ADDRESS_BASE) {
+		*(.bootstrap)
+	}
+
+	. += VIRTUAL_ADDRESS_BASE;
+	.text : AT(ADDR(.text) - VIRTUAL_ADDRESS_BASE) {
 		*(.text)
 	}
 
-	.rodata :
-	{
+	.rodata : {
 		*(.rodata)
 	}
 
-	.data :
-	{
+	.data : {
 		*(.data)
 	}
 
-	.bss :
-	{
+	__bss_first = .;
+	.bss : {
 		*(.bss)
 	}
+	__bss_last = .;
 
-	.debug_aranges :
-	{
+	.debug_aranges 0 : {
 		*(.debug_aranges)
 	}
 
-	.debug_info :
-	{
+	.debug_info 0 : {
 		*(.debug_info)
 	}
 
-	.debug_abbrev :
-	{
+	.debug_abbrev 0 : {
 		*(.debug_abbrev)
 	}
 
-	.debug_line :
-	{
+	.debug_line 0 : {
 		*(.debug_line)
 	}
 
-	.debug_str :
-	{
+	.debug_str 0 : {
 		*(.debug_str)
 	}
 
-	/DISCARD/ :
-	{
+	/DISCARD/ : {
 		*(.eh_frame .note.* .comment)
 	}
 }
