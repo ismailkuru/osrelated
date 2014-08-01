@@ -6,7 +6,7 @@
 #define ALIGNED(x) __attribute__((__aligned__(x)))
 #define SECTION(x) __attribute__((section(x)))
 #define BOOTSTRAP SECTION(".bootstrap")
-#define PA(x) ((void *)V2P((u8 *)(x)))
+#define PA(x) ((void *)V2P((char *)(x)))
 
 ALIGNED(PAGE_SIZE) pde_t pgdir[PD_SIZE];
 ALIGNED(PAGE_SIZE) pte_t pg0[PT_SIZE];
