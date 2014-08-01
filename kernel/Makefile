@@ -7,7 +7,8 @@ CFLAGS = -Wall -Wextra -Werror -std=gnu99 \
 ASFLAGS = -D__ASM_FILE__ -MMD -m32 -g
 
 OBJS = \
-	setup.o \
+	bootstrap.o \
+	entry.o \
 	earlyio.o \
 	boot.o \
 	utils.c \
