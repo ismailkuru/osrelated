@@ -3,7 +3,7 @@ LD = ld
 
 CFLAGS = -Wall -Wextra -Werror -std=gnu99 \
 	-ffreestanding -fno-stack-protector \
-	-MMD -m32 -g -nodefaultlibs -nostartfiles
+	-MMD -m32 -g
 ASFLAGS = -D__ASM_FILE__ -MMD -m32 -g
 
 OBJS = \
@@ -11,12 +11,12 @@ OBJS = \
 	entry.o \
 	earlyio.o \
 	boot.o \
-	utils.c \
+	utils.o \
 
 default : kernel
 
 kernel : $(OBJS) kernel.ld
-	$(CC) -m32 -T kernel.ld -ffreestanding -nostdlib $(OBJS) -o $@
+	$(LD) -nostdinc -T kernel.ld $(OBJS) -o $@
 	objcopy --only-keep-debug $@ kernel.sym
 	objcopy --strip-debug $@
 

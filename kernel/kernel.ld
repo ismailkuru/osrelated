@@ -1,3 +1,5 @@
+OUTPUT_FORMAT("elf32-i386", "elf32-i386", "elf32-i386")
+OUTPUT_ARCH(i386)
 ENTRY(_start)
 
 /* must be equal to layout.h definitions */
@@ -8,7 +10,12 @@ KERNEL_LINK_ADDRESS  = LINEAR_ADDRESS_BASE + VIRTUAL_ADDRESS_BASE;
 SECTIONS
 {
 	. = LINEAR_ADDRESS_BASE;
-	.bootstrap : AT(LINEAR_ADDRESS_BASE) {
+
+	.header : {
+		*(.header)
+	}
+
+	.bootstrap : {
 		*(.bootstrap)
 	}
 

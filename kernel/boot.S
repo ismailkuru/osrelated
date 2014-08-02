@@ -3,16 +3,15 @@
 #include "mmu.h"
 #include "param.h"
 
-	.section ".bootstrap", "ax"
-	.globl _start, enter_pm
-
-
+	.section ".header", "a"
 #define MB_HEADER_FLAGS MBF_PAGE_ALIGN
 	.align 4
 	.long MB_HEADER_MAGIC
 	.long MB_HEADER_FLAGS
 	.long -(MB_HEADER_MAGIC | MB_HEADER_FLAGS)
 
+	.section ".bootstrap", "ax"
+	.globl _start, enter_pm
 	.align 4
 boot_gdt:
 	.quad 0x0000000000000000
