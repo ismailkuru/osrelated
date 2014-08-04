@@ -4,11 +4,11 @@
 #include "param.h"
 
 	.section ".header", "a"
-#define MB_HEADER_FLAGS MBF_PAGE_ALIGN
+#define MB_HEADER_FLAGS (MBF_PAGE_ALIGN | MBF_MEMORY_INFO)
 	.align 4
 	.long MB_HEADER_MAGIC
 	.long MB_HEADER_FLAGS
-	.long -(MB_HEADER_MAGIC | MB_HEADER_FLAGS)
+	.long -(MB_HEADER_MAGIC + MB_HEADER_FLAGS)
 
 	.section ".bootstrap", "ax"
 	.globl _start, enter_pm
@@ -24,6 +24,8 @@ boot_gdt_descr:
 	.long boot_gdt
 
 _start:
+	movl	%eax, %edx
+
 	cld
 	xorl	%eax, %eax
 	movl	$(V2P(__bss_first)), %edi
@@ -45,8 +47,13 @@ _start:
 
 reload_cs:
 	movl	$(V2P(stack_end)), %esp
+	pushl	$0
+	popf
+	pushl	%ebx
+	pushl	%edx
 
 	call	setup
+	jmp	loop
 
 enter_pm:
 	movl	%cr0, %eax
