@@ -39,19 +39,19 @@ void BOOTSTRAP setup_mapping(void)
 
 void BOOTSTRAP fill_mem_map(struct multiboot_mmap_entry *mmap, size_t length)
 {
-	struct e820_map * const e820_map = &BOOT_PARAMS->e820_mem_info;
+	struct memory_map * const map = &BOOT_PARAMS->mmap;
 	struct multiboot_mmap_entry *entry = mmap;
 	size_t count = 0;
 	while ((size_t)entry < (size_t)mmap + length) {
-		e820_map->map[count].addr = entry->addr;
-		e820_map->map[count].size = entry->len;
-		e820_map->map[count].type = entry->type;
+		map->chunk[count].addr = entry->addr;
+		map->chunk[count].size = entry->len;
+		map->chunk[count].type = entry->type;
 
 		entry = (struct multiboot_mmap_entry *)
                           ((size_t)entry + entry->size + sizeof(entry->size));
 		++count;
 	}
-	e820_map->entries = count;
+	map->entries = count;
 }
 
 void BOOTSTRAP setup(u32 magic, struct multiboot_info *mbi)
