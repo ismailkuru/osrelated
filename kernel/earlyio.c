@@ -67,10 +67,14 @@ void eio_printf(char const *fmt, ...)
 		}
 
 		c = *fmt++;
-		if (c == 'd' || c == 'u' || c == 'x') {
+		if (c == 'u' || c == 'x') {
+			unsigned value = va_arg(vararg_lst, unsigned);
+			ultoa(buffer, value, (c == 'x' ? 16 : 10));
+			eio_puts(buffer);
+		} else if (c == 'd') {
 			int value = va_arg(vararg_lst, int);
-			itoa(buffer, value, (c == 'x' ? 16 : 10));
-			eio_puts(buffer);	
+			ltoa(buffer, value, 10);
+			eio_puts(buffer);
 		} else if (c == 's') {
 			eio_puts(va_arg(vararg_lst, char const *));
 		} else if (c == 'c') {
