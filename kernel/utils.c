@@ -1,17 +1,10 @@
-void itoa(char *buf, int d, int base)
+void ultoa(char *buf, unsigned long d, int base)
 {
 	char *begin = buf, *end = buf;
-	unsigned n = d;
-
-	if (base == 10 && d < 0) {
-		n = -d;
-		*begin++ = '-';
-	}
-
 	do {
-		int const rem = n % base;
+		unsigned rem = d % base;
 		*end++ = (rem < 10) ? rem + '0' : rem + 'a' - 10;
-	} while (n /= base);
+	} while (d /= base);
 
 	*end-- = 0;
 	while (begin < end) {
@@ -19,4 +12,14 @@ void itoa(char *buf, int d, int base)
 		*begin++ = *end;
 		*end-- = tmp;
 	}
+}
+
+void ltoa(char *buf, long d, int base)
+{
+	unsigned long n = d;
+	if (base == 10 && d < 0) {
+		*buf++ = '-';
+		n = (unsigned long)(-d);
+	}
+	ultoa(buf, n, base);
 }
