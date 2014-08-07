@@ -3,7 +3,7 @@ LD = ld
 
 CFLAGS = -Wall -Wextra -Werror -std=gnu99 \
 	-ffreestanding -fno-stack-protector \
-	-MMD -m32 -g
+	-MMD -m32 -g -O2
 ASFLAGS = -D__ASM_FILE__ -MMD -m32 -g
 
 OBJS = \
