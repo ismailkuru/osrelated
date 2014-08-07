@@ -11,7 +11,8 @@
 	.long -(MB_HEADER_MAGIC + MB_HEADER_FLAGS)
 
 	.section ".bootstrap", "ax"
-	.globl _start, enter_pm
+	.globl _start
+	
 	.align 4
 boot_gdt:
 	.quad 0x0000000000000000
@@ -22,6 +23,7 @@ boot_gdt:
 boot_gdt_descr:
 	.word (boot_gdt_descr - boot_gdt - 1)
 	.long boot_gdt
+
 
 _start:
 	movl	%eax, %edx
@@ -49,13 +51,21 @@ reload_cs:
 	movl	$(V2P(stack_end)), %esp
 	pushl	$0
 	popf
+
+	cmpl	$MB_BOOT_MAGIC, %edx
+	jne	loop
+
+	testl	$MBI_MEMMAP_INFO, (%ebx)
+	jz	loop
+
 	pushl	%ebx
-	pushl	%edx
+	movl	$(V2P(fill_mem_map)), %eax
+	call	*%eax
+	popl	%ebx
 
-	call	setup
-	jmp	loop
+	movl	$(V2P(setup_initial_mapping)), %eax
+	call	*%eax
 
-enter_pm:
 	movl	%cr0, %eax
 	orl	$CR0_PE, %eax
 	movl	%eax, %cr0
@@ -68,6 +78,7 @@ enter_pm:
 	movl	%eax, %cr0
 
 	call	entry_32
+
 loop:
 	jmp	loop
 

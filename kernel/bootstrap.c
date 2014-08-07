@@ -5,21 +5,19 @@
 #include "param.h"
 
 #define ALIGNED(x) __attribute__((__aligned__(x)))
-#define SECTION(x) __attribute__((section(x)))
-#define BOOTSTRAP SECTION(".bootstrap")
 #define PA(x) ((void *)V2P((char *)(x)))
-
 
 ALIGNED(PAGE_SIZE) pde_t pgdir[PD_SIZE];
 ALIGNED(PAGE_SIZE) pte_t pg0[PT_SIZE];
 ALIGNED(PAGE_SIZE) pte_t pg1[PT_SIZE];
 
-
 struct boot_params boot_params;
-#define BOOT_PARAMS ((struct boot_params *)PA(&boot_params))
 
+#if __GNUC__
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
 
-void BOOTSTRAP setup_mapping(void)
+void setup_initial_mapping(void)
 {
 	pte_t * const pg0_phys = PA(pg0);
 	pte_t * const pg1_phys = PA(pg0);
@@ -37,12 +35,17 @@ void BOOTSTRAP setup_mapping(void)
 	*(pgdir_phys + PD_INDEX(VIRTUAL_ADDRESS_BASE)) = (pde_t)pg1_phys | pde_flags;
 }
 
-void BOOTSTRAP fill_mem_map(struct multiboot_mmap_entry *mmap, size_t length)
+void fill_mem_map(struct multiboot_info *mbi)
 {
-	struct memory_map * const map = &BOOT_PARAMS->mmap;
-	struct multiboot_mmap_entry *entry = mmap;
+	struct multiboot_mmap_entry * const mmap_info =
+				(struct multiboot_mmap_entry *)mbi->mmap_addr;
+	size_t const length = mbi->mmap_length;
+
+	struct multiboot_mmap_entry *entry = mmap_info;
+	struct boot_params * const params = PA(&boot_params);
+	struct memory_map * const map = &params->mmap;
 	size_t count = 0;
-	while ((size_t)entry < (size_t)mmap + length) {
+	while ((size_t)entry < (size_t)mmap_info + length) {
 		map->chunk[count].addr = entry->addr;
 		map->chunk[count].size = entry->len;
 		map->chunk[count].type = entry->type;
@@ -52,20 +55,4 @@ void BOOTSTRAP fill_mem_map(struct multiboot_mmap_entry *mmap, size_t length)
 		++count;
 	}
 	map->entries = count;
-}
-
-void BOOTSTRAP setup(u32 magic, struct multiboot_info *mbi)
-{
-	extern void enter_pm(void);
-
-	if (magic != MB_BOOT_MAGIC)
-		return;
-
-	if (!(mbi->flags & MBI_MEMMAP_INFO))
-		return;
-
-        fill_mem_map((struct multiboot_mmap_entry *)mbi->mmap_addr,
-                       mbi->mmap_length);
-	setup_mapping();
-	enter_pm();
 }

@@ -20,16 +20,20 @@ SECTIONS
 	}
 
 	. += VIRTUAL_ADDRESS_BASE;
+
 	.text : AT(ADDR(.text) - VIRTUAL_ADDRESS_BASE) {
 		*(.text)
+		*(.text.*)
 	}
 
 	.rodata : {
 		*(.rodata)
+		*(.rodata.*)
 	}
 
 	.data : {
 		*(.data)
+		*(.data.*)
 	}
 
 	__bss_first = .;
