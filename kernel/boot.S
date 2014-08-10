@@ -30,8 +30,8 @@ _start:
 
 	cld
 	xorl	%eax, %eax
-	movl	$(V2P(__bss_first)), %edi
-	movl	$(V2P(__bss_last)), %ecx
+	movl	$__bss_start, %edi
+	movl	$__bss_end, %ecx
 	subl	%edi, %ecx
 	shrl	$2, %ecx
 	rep

@@ -37,11 +37,11 @@ SECTIONS
 		*(.data.*)
 	}
 
-	__bss_first = .;
+	__bss_start = (. - VIRTUAL_ADDRESS_BASE);
 	.bss : {
 		*(.bss)
 	}
-	__bss_last = .;
+	__bss_end = (. - VIRTUAL_ADDRESS_BASE);
 	__kernel_end = (. - VIRTUAL_ADDRESS_BASE);
 
 	.debug_aranges 0 : {
