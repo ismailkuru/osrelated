@@ -16,7 +16,7 @@ static void print_memory_map(struct memory_map const * map)
 	}
 	eio_printf("\nkernel is placed in 0x%x-0x%x\n",
 			(unsigned)&__kernel_start,
-			(unsigned)&__kernel_end);
+			(unsigned)&__kernel_end - 1);
 }
 
 void entry_32()
