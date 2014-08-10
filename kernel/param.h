@@ -26,5 +26,9 @@ struct boot_params
 };
 
 extern struct boot_params boot_params;
+extern char __bss_first;
+extern char __bss_last;
+extern char __kernel_start;
+extern char __kernel_end;
 
 #endif

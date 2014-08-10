@@ -14,11 +14,14 @@ static void print_memory_map(struct memory_map const * map)
 		            (map->chunk[i].type == RAM_CHUNK_USABLE) ?
 		                       "usable" : "reserved");
 	}
+	eio_printf("\nkernel is placed in 0x%x-0x%x\n",
+			(unsigned)&__kernel_start,
+			(unsigned)&__kernel_end);
 }
 
 void entry_32()
 {
 	eio_init();
-	eio_puts("Kernel is loaded\n");
+	eio_puts("Kernel is loaded\n\n");
 	print_memory_map(&boot_params.mmap);
 }

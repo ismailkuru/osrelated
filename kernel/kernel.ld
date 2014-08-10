@@ -11,6 +11,7 @@ SECTIONS
 {
 	. = LINEAR_ADDRESS_BASE;
 
+	__kernel_start = .;
 	.header : {
 		*(.header)
 	}
@@ -41,6 +42,7 @@ SECTIONS
 		*(.bss)
 	}
 	__bss_last = .;
+	__kernel_end = (. - VIRTUAL_ADDRESS_BASE);
 
 	.debug_aranges 0 : {
 		*(.debug_aranges)
